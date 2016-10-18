@@ -31,4 +31,4 @@ class Interface(Base):
     router_id = sa.Column(sa.ForeignKey('routers.id'))
 
     router = relationship('Router', back_populates='interfaces')
-    link = relationship('Link', back_populates='links')
+    link = relationship('Link', back_populates='interfaces')
