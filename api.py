@@ -24,6 +24,16 @@ database = {
 }
 
 
+class Root(Resource):
+
+    def get(self):
+        return {
+            'routers': url_for('routercollection'),
+            'links': url_for('linkcollection'),
+            'interfaces': url_for('interfacecollection')
+        }
+
+
 class RestCollection(Resource):
 
     @property
@@ -81,6 +91,7 @@ class LinkCollection(RestCollection):
 class InterfaceCollection(RestCollection):
     resource = Interface
 
+api.add_resource(Root, '/api')
 
 api.add_resource(RouterCollection, '/api/router')
 api.add_resource(Router, '/api/router/<int:id>')
