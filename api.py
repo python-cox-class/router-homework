@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, url_for
 from flask_restful import Resource, Api
 
 app = Flask(__name__)
@@ -26,9 +26,14 @@ database = {
 
 class RestCollection(Resource):
 
+    @property
+    def cname(self):
+        return self.resource.cname
+
     def get(self):
         return dict(
-            (k, v) for k, v in database[self.cname].items()
+            (url_for(self.resource.endpoint, id=k), v)
+            for k, v in database[self.cname].items()
             if not (isinstance(k, basestring) and k.startswith('_')))
 
     def post(self):
@@ -53,28 +58,28 @@ class RestResource(Resource):
         return {}
 
 
-class RouterCollection(RestCollection):
-    cname = 'routers'
-
-
 class Router(RestResource):
     cname = 'routers'
-
-
-class LinkCollection(RestCollection):
-    cname = 'links'
 
 
 class Link(RestResource):
     cname = 'links'
 
 
-class InterfaceCollection(RestCollection):
-    cname = 'interfaces'
-
-
 class Interface(RestResource):
     cname = 'interfaces'
+
+
+class RouterCollection(RestCollection):
+    resource = Router
+
+
+class LinkCollection(RestCollection):
+    resource = Link
+
+
+class InterfaceCollection(RestCollection):
+    resource = Interface
 
 
 api.add_resource(RouterCollection, '/api/router')
